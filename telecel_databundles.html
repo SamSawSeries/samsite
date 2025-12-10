@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTNUP2U.STORE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px;
+            border-radius: 8px;
+        }
+        .container h2 {
+            color: #333;
+        }
+        .input-field {
+            margin: 10px 0;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .dropdown {
+            margin: 10px 0;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .pay-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+   
+</head>
+<body>
+
+<div class="container">
+    <h2>WELCOME TO <span style="color: orange;">MTNUP2U.SHOP</span></h2>
+    <h3 style="color: blue;">Telecel <span style="color: red;"> Data </span> <span style="color: green;">  Bundles</span></h3>
+    <h3>Customer Details</h3>
+    <p style="color: red;
+    font-size: 12px;
+    margin-bottom: 20px;">There is no correction nor refund after submitting order</p>
+    
+    <input 
+        type="text" 
+        id="phoneNumber" 
+        class="input-field" 
+        placeholder="Enter your phone number" 
+        required>
+    
+    <input 
+        type="text" 
+        id="agentWhatsApp" 
+        class="input-field" 
+        placeholder="Enter Agent WhatsApp number" 
+        required>
+    
+    <input 
+        type="email" 
+        id="agentEmail" 
+        class="input-field" 
+        placeholder="Enter Agent email address" 
+        required>
+
+    <select class="dropdown" id="dataPlan">
+        
+        <option value="1850" data-plan="5GB - GHC 18.50">5GB - GHC 18.50 </option>
+        
+        <option value="2880" data-plan="8GB - GHC 28.80">8GB - GHC 28.80 </option>
+        
+        <option value="3589" data-plan="10GB - GHC 35.89">10GB - GHC 35.89 </option>
+        
+        <option value="4310" data-plan="12GB - GHC 43.10">12GB - GHC 43.10 </option>
+        
+        <option value="5289" data-plan="15GB - GHC 52.89">15GB - GHC 52.89 </option>
+        
+        <option value="7015" data-plan="20GB - GHC 70.15">20GB - GHC 70.15 </option>
+        
+        <option value="8765" data-plan="25GB - GHC 87.65">25GB - GHC 87.65 </option>
+        
+        <option value="10519" data-plan="30GB - GHC 105.19">30GB - GHC 105.19 </option>
+        
+        <option value="12270" data-plan="35GB - GHC 122.70">35GB - GHC 122.70 </option>
+        
+        <option value="14028" data-plan="40GB - GHC 140.28">40GB - GHC 140.28 </option>
+        
+        <option value="15780" data-plan="45GB - GHC 157.80">45GB - GHC 157.80 </option>
+        
+        <option value="17530" data-plan="50GB - GHC 175.30">50GB - GHC 175.30 </option>
+        
+        <option value="35055" data-plan="100GB - GHC 350.55">100GB - GHC 350.55 </option>
+    </select>
+    
+    <button class="pay-button" onclick="payWithPaystack()">Pay Now</button>
+</div>
+
+<script>
+    function payWithPaystack() {
+        // Get user inputs
+        const phoneNumber = document.getElementById('phoneNumber').value.trim();
+        const agentWhatsApp = document.getElementById('agentWhatsApp').value.trim();
+        const agentEmail = document.getElementById('agentEmail').value.trim();
+        const dataPlanSelect = document.getElementById('dataPlan');
+        const amount = dataPlanSelect.value; // Amount in pesewas (GHC × 100)
+        const selectedPlan = dataPlanSelect.options[dataPlanSelect.selectedIndex].getAttribute('data-plan');
+
+        // Validation
+        if (!phoneNumber || !agentWhatsApp || !agentEmail) {
+            alert("All fields are required!");
+            return;
+        }
+
+        if (!validateEmail(agentEmail)) {
+            alert("Please enter a valid email address!");
+            return;
+        }
+
+        // Paystack integration
+        const handler = PaystackPop.setup({
+            key: 'pk_test_de9e67daa67fd9f3ca2e513e063c926444c04dab', // Replace with your Paystack public key
+            email: agentEmail,
+            amount: amount, // Amount in pesewas (GHC × 100)
+            currency: 'GHS',
+            metadata: {
+                custom_fields: [
+                    {
+                        display_name: "Phone Number",
+                        variable_name: "phone_number",
+                        value: phoneNumber
+                    },
+                    {
+                        display_name: "Agent WhatsApp",
+                        variable_name: "agent_whatsapp",
+                        value: agentWhatsApp
+                    },
+                    {
+                        display_name: "Selected Plan",
+                        variable_name: "data_plan",
+                        value: selectedPlan
+                    }
+                ]
+            },
+            callback: function(response) {
+                // Payment was successful
+                alert(`Payment successful! Transaction ref: ${response.reference}`);
+            },
+            onClose: function() {
+                // Payment was canceled by the user
+                alert('Payment process was canceled.');
+            }
+        });
+
+        handler.openIframe();
+    }
+
+    function validateEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+</script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
+
+</body>
+</html>

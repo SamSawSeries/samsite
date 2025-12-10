@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTNUP2U.STORE</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            width: 300px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .container h2 {
+            margin-bottom: 5px;
+        }
+
+        .input-field,
+        .dropdown {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .pay-button {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Agent earning section */
+        .agent-box {
+            margin-top: 15px;
+            background: #e8f3ff;
+            padding: 12px;
+            border-left: 4px solid #007bff;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .agent-box strong {
+            color: #007bff;
+        }
+
+        .register-btn {
+            margin-top: 10px;
+            padding: 10px;
+            width: 100%;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>WELCOME TO <span style="color: orange;">MTNUP2U.SHOP</span></h2>
+<h3 style="color: blue;">MTNUP2U <span style="color: red;"> Data </span> <span style="color: green;"> Bundles</span></h3>
+    <h3>Customer Details</h3>
+
+    <p style="color: red; font-size: 12px; margin-bottom: 20px;">
+        There is no correction nor refund after submitting order
+    </p>
+
+    <input id="phoneNumber" class="input-field" type="text" placeholder="Enter your phone number">
+
+    <input id="agentWhatsApp" class="input-field" type="text" placeholder="Enter Agent WhatsApp number">
+
+    <input id="agentEmail" class="input-field" type="email" placeholder="Enter Agent email address">
+
+    <!-- DATA PLANS -->
+    <select class="dropdown" id="dataPlan" onchange="updateAgentEarnings()">
+
+        
+
+        <option value="1200" data-plan="2GB - GHC 12" data-agent="10">2GB - GHC 12 (90days)</option>
+        
+        <option value="600" data-plan="1GB - GHC 6" data-agent="10">1GB - GHC 6 (90days)</option>
+        
+        <option value="1800" data-plan="3GB - GHC 18" data-agent="15">3GB - GHC 18 (90days)</option>
+        <option value="2200" data-plan="4GB - GHC 22" data-agent="18">4GB - GHC 22 (90days)</option>
+        <option value="2800" data-plan="5GB - GHC 28" data-agent="22">5GB - GHC 28 (90days)</option>
+        <option value="5250" data-plan="10GB - GHC 52" data-agent="45">10GB - GHC 52.5 (90days)</option>
+        <option value="7300" data-plan="15GB - GHC 73" data-agent="63">15GB - GHC 73 (90days)</option>
+        <option value="9800" data-plan="20GB - GHC 98" data-agent="85">20GB - GHC 98 (90days)</option>
+        <option value="12000" data-plan="25GB - GHC 120" data-agent="105">25GB - GHC 120 (90days)</option>
+        <option value="14000" data-plan="30GB - GHC 140" data-agent="125">30GB - GHC 140 (90days)</option>
+        <option value="18400" data-plan="40GB - GHC 184" data-agent="165">40GB - GHC 184 (90days)</option>
+        <option value="22100" data-plan="50GB - GHC 221" data-agent="195">50GB - GHC 221 (90days)</option>
+        <option value="42350" data-plan="100GB - GHC 423.5" data-agent="380">100GB - GHC 423.5 (90days)</option>
+
+    </select>
+
+    <!-- AGENT EARNINGS BOX -->
+    <div class="agent-box" id="agentBox" >
+        <strong>Agent Earnings:</strong><br><span style="color: red; "><span style="color: orange;">1GB - 5.50 in agent portal</span><bdo dir="rtl"><br /></bdo>
+        If you were an agent, you'd buy this bundle for </span> GHC <span id="agentPrice">10</span>  
+        and earn GHC <span id="agentProfit">2</span> profit.<br><br>
+
+        Become an Agent today for only <strong>GHC 50</strong> and start earning daily!
+    </div>
+
+    <!-- REGISTER AS AGENT -->
+    <button class="register-btn" onclick="window.location.href='index.html'">
+        Register as Agent (GHC 50)
+    </button>
+
+    <!-- PAY BUTTON -->
+    <button class="pay-button" onclick="payWithPaystack()">Pay Now</button>
+</div>
+
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
+<script>
+    function updateAgentEarnings() {
+        const dp = document.getElementById("dataPlan");
+        const selected = dp.options[dp.selectedIndex];
+
+        const sellingPrice = Number(selected.value) / 100; 
+        const agentPrice = Number(selected.getAttribute("data-agent"));
+        const profit = sellingPrice - agentPrice;
+
+        document.getElementById("agentPrice").innerText = agentPrice;
+        document.getElementById("agentProfit").innerText = profit.toFixed(2);
+    }
+
+    updateAgentEarnings();
+
+
+    /* ============================
+       ✅ PAYSTACK PAYMENT FUNCTION
+       ============================ */
+    function payWithPaystack() {
+        const phoneNumber = document.getElementById("phoneNumber").value.trim();
+        const agentWhatsApp = document.getElementById("agentWhatsApp").value.trim();
+        const agentEmail = document.getElementById("agentEmail").value.trim();
+
+        const dp = document.getElementById("dataPlan");
+        const selectedOption = dp.options[dp.selectedIndex];
+
+        const amount = selectedOption.value; // in pesewas
+        const selectedPlan = selectedOption.getAttribute("data-plan");
+
+        if (!phoneNumber || !agentWhatsApp || !agentEmail) {
+            alert("All fields are required");
+            return;
+        }
+
+        let handler = PaystackPop.setup({
+            key: "pk_test_de9e67daa67fd9f3ca2e513e063c926444c04dab",
+            email: agentEmail,
+            amount: amount,
+            currency: "GHS",
+            metadata: {
+                custom_fields: [
+                    { display_name: "Phone Number", variable_name: "phone_number", value: phoneNumber },
+                    { display_name: "Agent WhatsApp", variable_name: "agent_whatsapp", value: agentWhatsApp },
+                    { display_name: "Selected Plan", variable_name: "data_plan", value: selectedPlan }
+                ]
+            },
+            callback: function (response) {
+                alert("Payment successful! Ref: " + response.reference);
+            },
+            onClose: function () {
+                alert("Payment cancelled.");
+            }
+        });
+
+        handler.openIframe();
+    }
+</script>
+
+
+</body>
+</html>
